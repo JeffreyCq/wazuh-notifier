@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wazuh Notifier — Settings</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <span class="logo">⛨</span>
+        <div>
+          <h1>Wazuh Notifier</h1>
+          <p class="subtitle">Settings</p>
+        </div>
+      </header>
+
+      <main>
+        <section class="card">
+          <h2>Connection</h2>
+          <p class="section-desc">
+            Point to your OpenSearch instance (Wazuh uses OpenSearch to store alerts).
+            If you have a self-signed certificate, visit the URL in a browser tab first to trust it.
+          </p>
+
+          <div class="field">
+            <label for="opensearch-url">OpenSearch URL</label>
+            <input
+              type="url"
+              id="opensearch-url"
+              placeholder="https://192.168.1.100:9200"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="username">Username</label>
+              <input type="text" id="username" placeholder="admin" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="input-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="••••••••"
+                  autocomplete="new-password"
+                />
+                <button type="button" id="toggle-password" class="toggle-btn">Show</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button id="btn-test" class="btn btn-secondary">Test Connection</button>
+            <span id="test-result" class="test-result"></span>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Alert Configuration</h2>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="poll-interval">Poll Interval</label>
+              <div class="input-suffix">
+                <input type="number" id="poll-interval" min="1" max="60" value="2" />
+                <span class="suffix">min</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="min-level">Minimum Alert Level</label>
+              <div class="level-wrapper">
+                <input type="range" id="min-level" min="1" max="15" value="12" />
+                <span id="level-value" class="level-badge">12</span>
+              </div>
+              <span class="field-hint">Level 12+ = critical, 7–11 = high, 1–6 = medium</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Enable Monitoring</h2>
+          <div class="toggle-row">
+            <div>
+              <p class="toggle-label">Active monitoring</p>
+              <p class="toggle-desc">Poll for new critical alerts in the background</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="enabled" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+
+        <div class="save-row">
+          <button id="btn-save" class="btn btn-primary">Save Settings</button>
+          <span id="save-status" class="save-status"></span>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

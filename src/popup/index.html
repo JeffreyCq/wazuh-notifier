@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wazuh Notifier</title>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="header-left">
+          <span class="logo">⛨</span>
+          <span class="title">Wazuh Notifier</span>
+        </div>
+        <div id="status-dot" class="status-dot status-unknown" title="Unknown"></div>
+      </header>
+
+      <div id="not-configured" class="state-panel hidden">
+        <p class="hint">Not configured yet.</p>
+        <button id="btn-open-options" class="btn btn-primary">Open Settings</button>
+      </div>
+
+      <div id="disabled-panel" class="state-panel hidden">
+        <p class="hint">Monitoring is disabled.</p>
+        <button id="btn-open-options-2" class="btn btn-secondary">Open Settings</button>
+      </div>
+
+      <div id="main-panel" class="hidden">
+        <div class="meta-row">
+          <span id="last-poll" class="meta-text">Last poll: —</span>
+          <button id="btn-poll" class="btn-icon" title="Poll now">↻</button>
+        </div>
+
+        <div class="section-title">Recent Alerts</div>
+
+        <div id="alerts-empty" class="empty-state hidden">
+          <span>No critical alerts detected</span>
+        </div>
+
+        <ul id="alerts-list" class="alerts-list"></ul>
+      </div>
+
+      <footer>
+        <button id="btn-options" class="footer-link">Settings</button>
+        <button id="btn-clear" class="footer-link">Clear</button>
+      </footer>
+    </div>
+  </body>
+</html>
