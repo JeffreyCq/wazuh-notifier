@@ -49,8 +49,11 @@ async function render(): Promise<void> {
   const alertsEmpty = document.getElementById('alerts-empty')!;
 
   // Status dot
+  const configured =
+    config.mode === 'cloud' ? !!config.dashboardUrl : !!config.opensearchUrl && !!config.username;
+
   dot.className = 'status-dot';
-  if (!config.opensearchUrl) {
+  if (!configured) {
     dot.classList.add('status-unknown');
     dot.title = 'Not configured';
   } else if (!config.enabled) {
@@ -65,7 +68,10 @@ async function render(): Promise<void> {
   }
 
   // Panels
-  if (!config.opensearchUrl || !config.username) {
+  const isConfigured =
+    config.mode === 'cloud' ? !!config.dashboardUrl : !!config.opensearchUrl && !!config.username;
+
+  if (!isConfigured) {
     notConfigured.classList.remove('hidden');
     return;
   }
