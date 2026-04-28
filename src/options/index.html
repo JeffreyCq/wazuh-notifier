@@ -16,115 +16,39 @@
       </header>
 
       <main>
-        <!-- Connection mode selector -->
+        <!-- Clusters -->
         <section class="card">
-          <h2>Connection Mode</h2>
-          <div class="mode-tabs">
-            <button class="mode-tab active" data-mode="selfhosted">
-              <span class="mode-icon">🖥</span>
-              <span class="mode-label">Self-hosted</span>
-              <span class="mode-desc">Direct OpenSearch access</span>
-            </button>
-            <button class="mode-tab" data-mode="cloud">
-              <span class="mode-icon">☁</span>
-              <span class="mode-label">Wazuh Cloud</span>
-              <span class="mode-desc">Dashboard proxy</span>
-            </button>
+          <div class="card-header">
+            <h2>Clusters</h2>
+            <button id="btn-add-cluster" class="btn btn-primary btn-sm">+ Add Cluster</button>
+          </div>
+          <div id="cluster-list" class="cluster-list">
+            <p class="empty-hint">No clusters yet. Add one to get started.</p>
           </div>
         </section>
 
-        <!-- Self-hosted fields -->
-        <section class="card" id="section-selfhosted">
-          <h2>OpenSearch Connection</h2>
-          <p class="section-desc">
-            Direct connection to your OpenSearch instance.
-            If you use a self-signed certificate, visit the URL in a browser tab first to trust it.
-          </p>
-
-          <div class="field">
-            <label for="opensearch-url">OpenSearch URL</label>
-            <input type="url" id="opensearch-url" placeholder="https://192.168.1.100:9200"
-              autocomplete="off" spellcheck="false" />
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="username">Username</label>
-              <input type="text" id="username" placeholder="admin" autocomplete="off" />
-            </div>
-            <div class="field">
-              <label for="password">Password</label>
-              <div class="field-input-row">
-                <input type="password" id="password" placeholder="••••••••"
-                  autocomplete="new-password" />
-                <button type="button" id="toggle-password" class="btn-inline">Show</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Cloud fields -->
-        <section class="card hidden" id="section-cloud">
-          <h2>Wazuh Cloud Connection</h2>
-          <p class="section-desc">
-            Queries alerts through the Wazuh Dashboard proxy using your active browser session.
-            <strong>You must be logged into the dashboard in Firefox before using this.</strong>
-          </p>
-
-          <div class="field">
-            <label for="dashboard-url">Dashboard URL</label>
-            <input type="url" id="dashboard-url"
-              placeholder="https://xxxxxxxx.cloud.wazuh.com"
-              autocomplete="off" spellcheck="false" />
-          </div>
-
-          <div class="cloud-hint">
-            <span class="hint-icon">ℹ</span>
-            No credentials needed — the extension uses your logged-in session automatically.
-          </div>
-        </section>
-
-        <!-- Test connection -->
-        <div class="action-row">
-          <button id="btn-test" class="btn btn-secondary">Test Connection</button>
-          <span id="test-result" class="test-result"></span>
-        </div>
-
-        <!-- Alert config -->
+        <!-- Notifications -->
         <section class="card">
-          <h2>Alert Configuration</h2>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="poll-interval">Poll Interval</label>
-              <div class="field-input-row narrow">
-                <input type="number" id="poll-interval" min="1" max="60" value="2" />
-                <span class="input-suffix">min</span>
-              </div>
-            </div>
-            <div class="field">
-              <label for="min-level">Minimum Alert Level</label>
-              <div class="field-input-row">
-                <input type="range" id="min-level" min="1" max="15" value="12" />
-                <span id="level-value" class="level-badge">12</span>
-              </div>
-              <span class="field-hint">12–15 = critical · 7–11 = high · 1–6 = medium</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- Enable toggle -->
-        <section class="card">
-          <h2>Enable Monitoring</h2>
+          <h2>Notifications</h2>
           <div class="toggle-row">
             <div>
-              <p class="toggle-label">Active monitoring</p>
-              <p class="toggle-desc">Poll for new critical alerts in the background</p>
+              <p class="toggle-label">Sound alerts</p>
+              <p class="toggle-desc">Play a beep when new critical alerts are detected</p>
             </div>
             <label class="switch">
-              <input type="checkbox" id="enabled" />
+              <input type="checkbox" id="sound-enabled" />
               <span class="slider"></span>
             </label>
+          </div>
+        </section>
+
+        <!-- Data -->
+        <section class="card">
+          <h2>Data</h2>
+          <div class="data-actions">
+            <button id="btn-export-json" class="btn btn-secondary btn-sm">Export JSON</button>
+            <button id="btn-export-csv" class="btn btn-secondary btn-sm">Export CSV</button>
+            <button id="btn-clear-history" class="btn btn-danger btn-sm">Clear History</button>
           </div>
         </section>
 
@@ -133,6 +57,91 @@
           <span id="save-status" class="save-status"></span>
         </div>
       </main>
+    </div>
+
+    <!-- Cluster edit modal -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Add Cluster</h3>
+          <button id="modal-close" class="modal-close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="field">
+            <label for="c-name">Cluster Name</label>
+            <input type="text" id="c-name" placeholder="Production Wazuh" />
+          </div>
+
+          <div class="field" style="margin-top:14px">
+            <label>Connection Mode</label>
+            <div class="mode-tabs">
+              <button class="mode-tab active" data-mode="selfhosted">🖥 Self-hosted</button>
+              <button class="mode-tab" data-mode="cloud">☁ Wazuh Cloud</button>
+            </div>
+          </div>
+
+          <div id="m-selfhosted">
+            <div class="field">
+              <label for="c-opensearch-url">OpenSearch URL</label>
+              <input type="url" id="c-opensearch-url" placeholder="https://192.168.1.100:9200" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="c-username">Username</label>
+                <input type="text" id="c-username" placeholder="admin" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="c-password">Password</label>
+                <div class="field-input-row">
+                  <input type="password" id="c-password" placeholder="••••••••" autocomplete="new-password" />
+                  <button type="button" id="c-toggle-password" class="btn-inline">Show</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="m-cloud" class="hidden">
+            <div class="field">
+              <label for="c-dashboard-url">Dashboard URL</label>
+              <input type="url" id="c-dashboard-url" placeholder="https://xxxxxxxx.cloud.wazuh.com" />
+            </div>
+            <div class="cloud-hint">
+              <span>ℹ</span> Uses your active browser session — log into the dashboard first.
+            </div>
+          </div>
+
+          <div class="field-row" style="margin-top:14px">
+            <div class="field">
+              <label for="c-poll-interval">Poll Interval</label>
+              <div class="field-input-row narrow">
+                <input type="number" id="c-poll-interval" min="1" max="60" value="2" />
+                <span class="input-suffix">min</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="c-min-level">Min Alert Level</label>
+              <div class="field-input-row">
+                <input type="range" id="c-min-level" min="1" max="15" value="12" />
+                <span id="c-level-value" class="level-badge">12</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:14px">
+            <label for="c-agent-filter">Agent Filter <span class="optional">(optional)</span></label>
+            <input type="text" id="c-agent-filter" placeholder="e.g. web-server (partial match)" />
+          </div>
+
+          <div class="test-row">
+            <button id="c-btn-test" class="btn btn-secondary btn-sm">Test Connection</button>
+            <span id="c-test-result" class="test-result"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button id="modal-save" class="btn btn-primary">Save Cluster</button>
+        </div>
+      </div>
     </div>
   </body>
 </html>

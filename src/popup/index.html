@@ -12,37 +12,51 @@
           <span class="logo">⛨</span>
           <span class="title">Wazuh Notifier</span>
         </div>
-        <div id="status-dot" class="status-dot status-unknown" title="Unknown"></div>
+        <div class="header-right">
+          <div id="status-dot" class="status-dot status-unknown" title="Unknown"></div>
+          <button id="btn-poll" class="btn-icon" title="Poll now">↻</button>
+        </div>
       </header>
 
-      <div id="not-configured" class="state-panel hidden">
-        <p class="hint">Not configured yet.</p>
+      <!-- No clusters configured -->
+      <div id="state-empty" class="state-panel hidden">
+        <p class="hint">No clusters configured.</p>
         <button id="btn-open-options" class="btn btn-primary">Open Settings</button>
       </div>
 
-      <div id="disabled-panel" class="state-panel hidden">
-        <p class="hint">Monitoring is disabled.</p>
+      <!-- All clusters disabled -->
+      <div id="state-disabled" class="state-panel hidden">
+        <p class="hint">All clusters are disabled.</p>
         <button id="btn-open-options-2" class="btn btn-secondary">Open Settings</button>
       </div>
 
+      <!-- Main panel -->
       <div id="main-panel" class="hidden">
+        <!-- Filters -->
+        <div class="filters">
+          <select id="cluster-select" class="filter-select">
+            <option value="">All clusters</option>
+          </select>
+          <input id="agent-filter" class="filter-input" type="text" placeholder="Filter by agent…" />
+        </div>
+
+        <!-- Meta row -->
         <div class="meta-row">
           <span id="last-poll" class="meta-text">Last poll: —</span>
-          <button id="btn-poll" class="btn-icon" title="Poll now">↻</button>
+          <span id="alert-count" class="meta-text"></span>
         </div>
 
-        <div class="section-title">Recent Alerts</div>
-
-        <div id="alerts-empty" class="empty-state hidden">
-          <span>No critical alerts detected</span>
-        </div>
-
+        <!-- Alerts -->
+        <div id="alerts-empty" class="empty-state hidden">No critical alerts detected</div>
         <ul id="alerts-list" class="alerts-list"></ul>
       </div>
 
       <footer>
         <button id="btn-options" class="footer-link">Settings</button>
         <button id="btn-clear" class="footer-link">Clear</button>
+        <div class="footer-spacer"></div>
+        <button id="btn-export-json" class="footer-link" title="Export as JSON">JSON</button>
+        <button id="btn-export-csv" class="footer-link" title="Export as CSV">CSV</button>
       </footer>
     </div>
   </body>

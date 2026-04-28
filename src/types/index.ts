@@ -1,17 +1,25 @@
 export type ConnectionMode = 'selfhosted' | 'cloud';
 
-export interface Config {
+export interface ClusterConfig {
+  id: string;
+  name: string;
   mode: ConnectionMode;
-  // Self-hosted (direct OpenSearch)
+  // Self-hosted
   opensearchUrl: string;
   username: string;
   password: string;
-  // Cloud (Wazuh Dashboard proxy)
+  // Cloud
   dashboardUrl: string;
-  // Common
+  // Per-cluster settings
   pollIntervalMinutes: number;
   minAlertLevel: number;
+  agentFilter: string;
   enabled: boolean;
+}
+
+export interface AppConfig {
+  clusters: ClusterConfig[];
+  soundEnabled: boolean;
 }
 
 export interface AlertSource {
@@ -22,11 +30,7 @@ export interface AlertSource {
     id: string;
     groups?: string[];
   };
-  agent: {
-    name: string;
-    id: string;
-    ip?: string;
-  };
+  agent: { name: string; id: string; ip?: string };
   location?: string;
   full_log?: string;
   data?: Record<string, unknown>;
@@ -40,6 +44,8 @@ export interface Alert {
 
 export interface StoredAlert extends Alert {
   notifiedAt: number;
+  clusterId: string;
+  clusterName: string;
 }
 
 export interface ConnectionStatus {

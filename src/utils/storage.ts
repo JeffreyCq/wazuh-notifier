@@ -1,24 +1,53 @@
 import browser from 'webextension-polyfill';
-import type { Config, StoredAlert, ConnectionStatus } from '../types';
+import type { ClusterConfig, AppConfig, StoredAlert, ConnectionStatus } from '../types';
 
-export const DEFAULT_CONFIG: Config = {
-  mode: 'selfhosted',
-  opensearchUrl: '',
-  username: '',
-  password: '',
-  dashboardUrl: '',
-  pollIntervalMinutes: 2,
-  minAlertLevel: 12,
-  enabled: false,
-};
-
-export async function getConfig(): Promise<Config> {
-  const result = await browser.storage.local.get('config');
-  return { ...DEFAULT_CONFIG, ...(result['config'] as Config | undefined) };
+export function makeCluster(overrides: Partial<ClusterConfig> = {}): ClusterConfig {
+  return {
+    id: crypto.randomUUID(),
+    name: 'My Cluster',
+    mode: 'selfhosted',
+    opensearchUrl: '',
+    username: '',
+    password: '',
+    dashboardUrl: '',
+    pollIntervalMinutes: 2,
+    minAlertLevel: 12,
+    agentFilter: '',
+    enabled: false,
+    ...overrides,
+  };
 }
 
-export async function saveConfig(config: Config): Promise<void> {
-  await browser.storage.local.set({ config });
+export const DEFAULT_APP_CONFIG: AppConfig = { clusters: [], soundEnabled: true };
+
+// Migrate from old single-Config storage format
+async function migrateIfNeeded(): Promise<void> {
+  const raw = await browser.storage.local.get(['config', 'appConfig']);
+  if (raw['appConfig'] || !raw['config']) return;
+  const old = raw['config'] as Record<string, unknown>;
+  const cluster = makeCluster({
+    name: 'My Wazuh',
+    mode: (old['mode'] as ClusterConfig['mode']) ?? 'selfhosted',
+    opensearchUrl: (old['opensearchUrl'] as string) ?? '',
+    username: (old['username'] as string) ?? '',
+    password: (old['password'] as string) ?? '',
+    dashboardUrl: (old['dashboardUrl'] as string) ?? '',
+    pollIntervalMinutes: (old['pollIntervalMinutes'] as number) ?? 2,
+    minAlertLevel: (old['minAlertLevel'] as number) ?? 12,
+    enabled: (old['enabled'] as boolean) ?? false,
+  });
+  await browser.storage.local.set({ appConfig: { clusters: [cluster], soundEnabled: true } });
+  await browser.storage.local.remove('config');
+}
+
+export async function getAppConfig(): Promise<AppConfig> {
+  await migrateIfNeeded();
+  const result = await browser.storage.local.get('appConfig');
+  return { ...DEFAULT_APP_CONFIG, ...(result['appConfig'] as AppConfig | undefined) };
+}
+
+export async function saveAppConfig(config: AppConfig): Promise<void> {
+  await browser.storage.local.set({ appConfig: config });
 }
 
 export async function getSeenIds(): Promise<Set<string>> {
@@ -29,9 +58,7 @@ export async function getSeenIds(): Promise<Set<string>> {
 export async function addSeenIds(ids: string[]): Promise<void> {
   const current = await getSeenIds();
   ids.forEach((id) => current.add(id));
-  // Keep only last 500 entries to avoid storage bloat
-  const trimmed = Array.from(current).slice(-500);
-  await browser.storage.local.set({ seenIds: trimmed });
+  await browser.storage.local.set({ seenIds: Array.from(current).slice(-500) });
 }
 
 export async function getRecentAlerts(): Promise<StoredAlert[]> {
@@ -41,33 +68,31 @@ export async function getRecentAlerts(): Promise<StoredAlert[]> {
 
 export async function addRecentAlerts(alerts: StoredAlert[]): Promise<void> {
   const current = await getRecentAlerts();
-  const combined = [...alerts, ...current].slice(0, 50);
-  await browser.storage.local.set({ recentAlerts: combined });
+  await browser.storage.local.set({ recentAlerts: [...alerts, ...current].slice(0, 100) });
 }
 
 export async function clearRecentAlerts(): Promise<void> {
   await browser.storage.local.set({ recentAlerts: [] });
 }
 
-export async function getConnectionStatus(): Promise<ConnectionStatus> {
-  const result = await browser.storage.local.get('connectionStatus');
-  return (
-    (result['connectionStatus'] as ConnectionStatus | undefined) ?? {
-      connected: false,
-      lastCheck: 0,
-    }
-  );
+export async function getConnectionStatuses(): Promise<Record<string, ConnectionStatus>> {
+  const result = await browser.storage.local.get('connectionStatuses');
+  return (result['connectionStatuses'] as Record<string, ConnectionStatus> | undefined) ?? {};
 }
 
-export async function saveConnectionStatus(status: ConnectionStatus): Promise<void> {
-  await browser.storage.local.set({ connectionStatus: status });
+export async function saveConnectionStatus(clusterId: string, status: ConnectionStatus): Promise<void> {
+  const all = await getConnectionStatuses();
+  all[clusterId] = status;
+  await browser.storage.local.set({ connectionStatuses: all });
 }
 
-export async function getLastPollTime(): Promise<number> {
-  const result = await browser.storage.local.get('lastPollTime');
-  return (result['lastPollTime'] as number | undefined) ?? 0;
+export async function getLastPollTimes(): Promise<Record<string, number>> {
+  const result = await browser.storage.local.get('lastPollTimes');
+  return (result['lastPollTimes'] as Record<string, number> | undefined) ?? {};
 }
 
-export async function saveLastPollTime(time: number): Promise<void> {
-  await browser.storage.local.set({ lastPollTime: time });
+export async function saveLastPollTime(clusterId: string, time: number): Promise<void> {
+  const all = await getLastPollTimes();
+  all[clusterId] = time;
+  await browser.storage.local.set({ lastPollTimes: all });
 }
