@@ -17,7 +17,9 @@ const ALARM_NAME = 'wazuh-poll';
 async function poll(): Promise<void> {
   const config = await getConfig();
 
-  if (!config.enabled || !config.opensearchUrl || !config.username) return;
+  const ready =
+    config.mode === 'cloud' ? !!config.dashboardUrl : !!config.opensearchUrl && !!config.username;
+  if (!config.enabled || !ready) return;
 
   try {
     const lastPollTime = await getLastPollTime();
