@@ -11,7 +11,7 @@ module.exports = (env = {}) => ({
     options: './src/options/index.ts',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, env.firefox ? 'dist/firefox' : 'dist/chrome'),
     filename: '[name].js',
     clean: true,
   },
