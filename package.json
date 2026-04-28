@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "dev": "webpack --config webpack.config.js --watch",
-    "build:firefox": "webpack --config webpack.config.js --env firefox"
+    "build:firefox": "webpack --config webpack.config.js --env firefox",
+    "generate-icons": "node scripts/generate-icons.js"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
@@ -21,4 +22,6 @@
   },
   "dependencies": {
     "@types/webextension-polyfill": "^0.10.7",
-    "webextension-pol
+    "webextension-polyfill": "^0.12.0"
+  }
+}
