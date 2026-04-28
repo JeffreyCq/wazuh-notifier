@@ -26,10 +26,7 @@ header {
   margin-bottom: 32px;
 }
 
-.logo {
-  font-size: 32px;
-  line-height: 1;
-}
+.logo { font-size: 32px; line-height: 1; }
 
 h1 {
   font-size: 20px;
@@ -56,94 +53,167 @@ h1 {
   font-size: 15px;
   font-weight: 600;
   color: #f1f5f9;
-  margin-bottom: 6px;
+  margin-bottom: 14px;
 }
 
 .section-desc {
   font-size: 12px;
   color: #64748b;
-  line-height: 1.5;
+  line-height: 1.6;
   margin-bottom: 18px;
 }
+
+.section-desc strong { color: #94a3b8; }
+
+/* Mode tabs */
+.mode-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.mode-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+}
+
+.mode-tab:hover { border-color: #475569; }
+
+.mode-tab.active {
+  border-color: #3b82f6;
+  background: #1e3a5f;
+}
+
+.mode-icon { font-size: 20px; line-height: 1; }
+
+.mode-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.mode-desc {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.mode-tab.active .mode-label { color: #93c5fd; }
+.mode-tab.active .mode-desc  { color: #60a5fa; }
+
+/* Cloud hint */
+.cloud-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: #1a2f4a;
+  border: 1px solid #1e4080;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #93c5fd;
+  line-height: 1.5;
+}
+
+.hint-icon { font-size: 14px; flex-shrink: 0; }
 
 /* Fields */
 .field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   flex: 1;
+  margin-top: 14px;
 }
 
 .field-row {
   display: flex;
   gap: 14px;
-  margin-top: 14px;
 }
 
 label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
+/* Unified input style — applies to all text-like inputs */
 input[type='url'],
 input[type='text'],
 input[type='password'],
 input[type='number'] {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
   background: #0f172a;
   border: 1px solid #334155;
   border-radius: 6px;
   color: #e2e8f0;
   font-size: 13px;
-  padding: 8px 10px;
   outline: none;
   transition: border-color 0.15s;
-  width: 100%;
 }
 
-input:focus {
-  border-color: #3b82f6;
-}
+input:focus { border-color: #3b82f6; }
 
-input[type='number'] {
-  width: 80px;
-}
-
-/* Password wrapper */
-.input-wrapper {
-  position: relative;
+/* Row that holds an input + inline button or suffix — keeps same 38px height */
+.field-input-row {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  height: 38px;
+  gap: 0;
 }
 
-.input-wrapper input {
-  padding-right: 52px;
+.field-input-row input {
+  flex: 1;
+  height: 100%;
+  border-radius: 6px 0 0 6px;
 }
 
-.toggle-btn {
-  position: absolute;
-  right: 8px;
-  background: none;
-  border: none;
+.field-input-row.narrow input {
+  border-radius: 6px;
+  width: 72px;
+  flex: 0 0 72px;
+}
+
+/* Inline button (Show/Hide password) */
+.btn-inline {
+  height: 38px;
+  padding: 0 10px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
   color: #64748b;
-  cursor: pointer;
   font-size: 11px;
-  padding: 2px 4px;
-  border-radius: 3px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
 }
 
-.toggle-btn:hover { color: #94a3b8; }
+.btn-inline:hover { color: #94a3b8; background: #263348; }
 
-/* Input with suffix */
+/* Suffix text (min) */
 .input-suffix {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.suffix {
+  padding: 0 10px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
   font-size: 12px;
   color: #64748b;
   white-space: nowrap;
@@ -152,43 +222,38 @@ input[type='number'] {
 .field-hint {
   font-size: 11px;
   color: #475569;
-  margin-top: 2px;
 }
 
-/* Level slider */
-.level-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
+/* Range + level badge */
 input[type='range'] {
   flex: 1;
+  height: 38px;
   accent-color: #3b82f6;
   cursor: pointer;
+  padding: 0;
 }
 
 .level-badge {
-  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 38px;
+  font-size: 14px;
   font-weight: 700;
   color: #ef4444;
-  min-width: 24px;
-  text-align: center;
 }
 
-/* Action row */
+/* Action row (test connection) */
 .action-row {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-top: 18px;
+  margin-bottom: 16px;
 }
 
-.test-result {
-  font-size: 12px;
-}
-
-.result-ok { color: #22c55e; }
+.test-result { font-size: 12px; }
+.result-ok   { color: #22c55e; }
 .result-error { color: #ef4444; }
 
 /* Toggle switch */
@@ -196,7 +261,6 @@ input[type='range'] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 6px;
 }
 
 .toggle-label {
@@ -206,10 +270,7 @@ input[type='range'] {
   margin-bottom: 2px;
 }
 
-.toggle-desc {
-  font-size: 12px;
-  color: #64748b;
-}
+.toggle-desc { font-size: 12px; color: #64748b; }
 
 .switch {
   position: relative;
@@ -250,16 +311,15 @@ input[type='range'] {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 8px;
 }
 
-.save-status {
-  font-size: 13px;
-}
+.save-status { font-size: 13px; }
 
 /* Buttons */
 .btn {
-  padding: 8px 20px;
+  height: 38px;
+  padding: 0 20px;
   border-radius: 6px;
   border: none;
   font-size: 13px;
@@ -270,14 +330,11 @@ input[type='range'] {
 
 .btn:hover { opacity: 0.85; }
 .btn:disabled { opacity: 0.5; cursor: default; }
-
-.btn-primary {
-  background: #3b82f6;
-  color: #fff;
-}
-
+.btn-primary { background: #3b82f6; color: #fff; }
 .btn-secondary {
   background: #1e293b;
   color: #94a3b8;
   border: 1px solid #334155;
 }
+
+.hidden { display: none !important; }

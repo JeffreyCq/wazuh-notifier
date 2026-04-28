@@ -2,9 +2,11 @@ import browser from 'webextension-polyfill';
 import type { Config, StoredAlert, ConnectionStatus } from '../types';
 
 export const DEFAULT_CONFIG: Config = {
+  mode: 'selfhosted',
   opensearchUrl: '',
   username: '',
   password: '',
+  dashboardUrl: '',
   pollIntervalMinutes: 2,
   minAlertLevel: 12,
   enabled: false,

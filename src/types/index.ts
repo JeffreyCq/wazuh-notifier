@@ -1,7 +1,14 @@
+export type ConnectionMode = 'selfhosted' | 'cloud';
+
 export interface Config {
+  mode: ConnectionMode;
+  // Self-hosted (direct OpenSearch)
   opensearchUrl: string;
   username: string;
   password: string;
+  // Cloud (Wazuh Dashboard proxy)
+  dashboardUrl: string;
+  // Common
   pollIntervalMinutes: number;
   minAlertLevel: number;
   enabled: boolean;

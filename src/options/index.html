@@ -16,22 +16,35 @@
       </header>
 
       <main>
+        <!-- Connection mode selector -->
         <section class="card">
-          <h2>Connection</h2>
+          <h2>Connection Mode</h2>
+          <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="selfhosted">
+              <span class="mode-icon">🖥</span>
+              <span class="mode-label">Self-hosted</span>
+              <span class="mode-desc">Direct OpenSearch access</span>
+            </button>
+            <button class="mode-tab" data-mode="cloud">
+              <span class="mode-icon">☁</span>
+              <span class="mode-label">Wazuh Cloud</span>
+              <span class="mode-desc">Dashboard proxy</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Self-hosted fields -->
+        <section class="card" id="section-selfhosted">
+          <h2>OpenSearch Connection</h2>
           <p class="section-desc">
-            Point to your OpenSearch instance (Wazuh uses OpenSearch to store alerts).
-            If you have a self-signed certificate, visit the URL in a browser tab first to trust it.
+            Direct connection to your OpenSearch instance.
+            If you use a self-signed certificate, visit the URL in a browser tab first to trust it.
           </p>
 
           <div class="field">
             <label for="opensearch-url">OpenSearch URL</label>
-            <input
-              type="url"
-              id="opensearch-url"
-              placeholder="https://192.168.1.100:9200"
-              autocomplete="off"
-              spellcheck="false"
-            />
+            <input type="url" id="opensearch-url" placeholder="https://192.168.1.100:9200"
+              autocomplete="off" spellcheck="false" />
           </div>
 
           <div class="field-row">
@@ -41,46 +54,66 @@
             </div>
             <div class="field">
               <label for="password">Password</label>
-              <div class="input-wrapper">
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="••••••••"
-                  autocomplete="new-password"
-                />
-                <button type="button" id="toggle-password" class="toggle-btn">Show</button>
+              <div class="field-input-row">
+                <input type="password" id="password" placeholder="••••••••"
+                  autocomplete="new-password" />
+                <button type="button" id="toggle-password" class="btn-inline">Show</button>
               </div>
             </div>
           </div>
+        </section>
 
-          <div class="action-row">
-            <button id="btn-test" class="btn btn-secondary">Test Connection</button>
-            <span id="test-result" class="test-result"></span>
+        <!-- Cloud fields -->
+        <section class="card hidden" id="section-cloud">
+          <h2>Wazuh Cloud Connection</h2>
+          <p class="section-desc">
+            Queries alerts through the Wazuh Dashboard proxy using your active browser session.
+            <strong>You must be logged into the dashboard in Firefox before using this.</strong>
+          </p>
+
+          <div class="field">
+            <label for="dashboard-url">Dashboard URL</label>
+            <input type="url" id="dashboard-url"
+              placeholder="https://xxxxxxxx.cloud.wazuh.com"
+              autocomplete="off" spellcheck="false" />
+          </div>
+
+          <div class="cloud-hint">
+            <span class="hint-icon">ℹ</span>
+            No credentials needed — the extension uses your logged-in session automatically.
           </div>
         </section>
 
+        <!-- Test connection -->
+        <div class="action-row">
+          <button id="btn-test" class="btn btn-secondary">Test Connection</button>
+          <span id="test-result" class="test-result"></span>
+        </div>
+
+        <!-- Alert config -->
         <section class="card">
           <h2>Alert Configuration</h2>
 
           <div class="field-row">
             <div class="field">
               <label for="poll-interval">Poll Interval</label>
-              <div class="input-suffix">
+              <div class="field-input-row narrow">
                 <input type="number" id="poll-interval" min="1" max="60" value="2" />
-                <span class="suffix">min</span>
+                <span class="input-suffix">min</span>
               </div>
             </div>
             <div class="field">
               <label for="min-level">Minimum Alert Level</label>
-              <div class="level-wrapper">
+              <div class="field-input-row">
                 <input type="range" id="min-level" min="1" max="15" value="12" />
                 <span id="level-value" class="level-badge">12</span>
               </div>
-              <span class="field-hint">Level 12+ = critical, 7–11 = high, 1–6 = medium</span>
+              <span class="field-hint">12–15 = critical · 7–11 = high · 1–6 = medium</span>
             </div>
           </div>
         </section>
 
+        <!-- Enable toggle -->
         <section class="card">
           <h2>Enable Monitoring</h2>
           <div class="toggle-row">

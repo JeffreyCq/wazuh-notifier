@@ -2,17 +2,29 @@ import browser from 'webextension-polyfill';
 import './options.css';
 import { getConfig, saveConfig, DEFAULT_CONFIG } from '../utils/storage';
 import { testConnection } from '../utils/api';
-import type { Config } from '../types';
+import type { Config, ConnectionMode } from '../types';
 
 function el<T extends HTMLElement>(id: string): T {
   return document.getElementById(id) as T;
 }
 
+function setMode(mode: ConnectionMode): void {
+  document.querySelectorAll<HTMLButtonElement>('.mode-tab').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset['mode'] === mode);
+  });
+  el('section-selfhosted').classList.toggle('hidden', mode !== 'selfhosted');
+  el('section-cloud').classList.toggle('hidden', mode !== 'cloud');
+}
+
 function readForm(): Config {
+  const mode = (document.querySelector<HTMLButtonElement>('.mode-tab.active')?.dataset['mode'] ??
+    'selfhosted') as ConnectionMode;
   return {
+    mode,
     opensearchUrl: el<HTMLInputElement>('opensearch-url').value.trim(),
     username: el<HTMLInputElement>('username').value.trim(),
     password: el<HTMLInputElement>('password').value,
+    dashboardUrl: el<HTMLInputElement>('dashboard-url').value.trim(),
     pollIntervalMinutes: Math.max(1, parseInt(el<HTMLInputElement>('poll-interval').value, 10) || 2),
     minAlertLevel: parseInt(el<HTMLInputElement>('min-level').value, 10),
     enabled: el<HTMLInputElement>('enabled').checked,
@@ -20,9 +32,11 @@ function readForm(): Config {
 }
 
 function populateForm(config: Config): void {
+  setMode(config.mode);
   el<HTMLInputElement>('opensearch-url').value = config.opensearchUrl;
   el<HTMLInputElement>('username').value = config.username;
   el<HTMLInputElement>('password').value = config.password;
+  el<HTMLInputElement>('dashboard-url').value = config.dashboardUrl;
   el<HTMLInputElement>('poll-interval').value = String(config.pollIntervalMinutes);
   el<HTMLInputElement>('min-level').value = String(config.minAlertLevel);
   el<HTMLInputElement>('enabled').checked = config.enabled;
@@ -46,7 +60,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const config = await getConfig();
   populateForm({ ...DEFAULT_CONFIG, ...config });
 
-  // Level slider live preview
+  // Mode tabs
+  document.querySelectorAll<HTMLButtonElement>('.mode-tab').forEach((btn) => {
+    btn.addEventListener('click', () => setMode(btn.dataset['mode'] as ConnectionMode));
+  });
+
+  // Level slider
   el<HTMLInputElement>('min-level').addEventListener('input', (e) => {
     el('level-value').textContent = (e.target as HTMLInputElement).value;
   });
@@ -55,13 +74,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   el('toggle-password').addEventListener('click', () => {
     const input = el<HTMLInputElement>('password');
     const btn = el<HTMLButtonElement>('toggle-password');
-    if (input.type === 'password') {
-      input.type = 'text';
-      btn.textContent = 'Hide';
-    } else {
-      input.type = 'password';
-      btn.textContent = 'Show';
-    }
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.textContent = isHidden ? 'Hide' : 'Show';
   });
 
   // Test connection
@@ -72,20 +87,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     showTestResult('', true);
 
     const current = readForm();
-    if (!current.opensearchUrl || !current.username) {
-      showTestResult('Fill in URL and username first.', false);
+    const needsUrl = current.mode === 'cloud' ? !current.dashboardUrl : !current.opensearchUrl;
+    if (needsUrl) {
+      showTestResult('Enter the URL first.', false);
       btn.disabled = false;
       btn.textContent = 'Test Connection';
       return;
     }
 
     const result = await testConnection(current);
-    if (result.ok) {
-      showTestResult(`✓ Connected — ${result.clusterName}`, true);
-    } else {
-      showTestResult(`✗ ${result.error}`, false);
-    }
-
+    showTestResult(result.ok ? `✓ ${result.clusterName}` : `✗ ${result.error}`, result.ok);
     btn.disabled = false;
     btn.textContent = 'Test Connection';
   });
@@ -94,12 +105,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   el('btn-save').addEventListener('click', async () => {
     const btn = el<HTMLButtonElement>('btn-save');
     btn.disabled = true;
-
     const newConfig = readForm();
     await saveConfig(newConfig);
     await browser.runtime.sendMessage({ type: 'CONFIG_UPDATED' });
     showSaveStatus('✓ Saved', true);
-
     btn.disabled = false;
   });
 });
