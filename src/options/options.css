@@ -213,7 +213,10 @@ input::placeholder { color: var(--text-3) !important; }
 
 /* Field input row */
 .field-input-row { display: flex; align-items: stretch; height: 36px; }
-.field-input-row input { flex: 1; height: 100%; border-radius: 6px 0 0 6px; }
+/* Input solo (sin botón adjunto): todas las esquinas redondeadas */
+.field-input-row input:only-child { flex: 1; height: 100%; border-radius: 6px; }
+/* Input con botón/suffix adjunto: solo esquinas izquierdas */
+.field-input-row input:not(:only-child) { flex: 1; height: 100%; border-radius: 6px 0 0 6px; }
 .field-input-row.narrow input { border-radius: 6px; width: 72px; flex: 0 0 72px; }
 
 .btn-inline {

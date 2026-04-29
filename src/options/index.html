@@ -70,7 +70,9 @@
         <div class="modal-body">
           <div class="field">
             <label for="c-name">Cluster Name</label>
-            <input type="text" id="c-name" placeholder="Production Wazuh" />
+            <div class="field-input-row">
+              <input type="text" id="c-name" placeholder="Production Wazuh" />
+            </div>
           </div>
 
           <div class="field" style="margin-top:14px">
@@ -84,12 +86,16 @@
           <div id="m-selfhosted">
             <div class="field">
               <label for="c-opensearch-url">OpenSearch URL</label>
-              <input type="url" id="c-opensearch-url" placeholder="https://192.168.1.100:9200" />
+              <div class="field-input-row">
+                <input type="url" id="c-opensearch-url" placeholder="https://192.168.1.100:9200" />
+              </div>
             </div>
             <div class="field-row">
               <div class="field">
                 <label for="c-username">Username</label>
-                <input type="text" id="c-username" placeholder="admin" autocomplete="off" />
+                <div class="field-input-row">
+                  <input type="text" id="c-username" placeholder="admin" autocomplete="off" />
+                </div>
               </div>
               <div class="field">
                 <label for="c-password">Password</label>
@@ -104,7 +110,9 @@
           <div id="m-cloud" class="hidden">
             <div class="field">
               <label for="c-dashboard-url">Dashboard URL</label>
-              <input type="url" id="c-dashboard-url" placeholder="https://xxxxxxxx.cloud.wazuh.com" />
+              <div class="field-input-row">
+                <input type="url" id="c-dashboard-url" placeholder="https://xxxxxxxx.cloud.wazuh.com" />
+              </div>
             </div>
             <div class="cloud-hint">
               <span>ℹ</span> Uses your active browser session — log into the dashboard first.
@@ -130,7 +138,9 @@
 
           <div class="field" style="margin-top:14px">
             <label for="c-agent-filter">Agent Filter <span class="optional">(optional)</span></label>
-            <input type="text" id="c-agent-filter" placeholder="e.g. web-server (partial match)" />
+            <div class="field-input-row">
+              <input type="text" id="c-agent-filter" placeholder="e.g. web-server (partial match)" />
+            </div>
           </div>
 
           <div class="test-row">
