@@ -5,41 +5,50 @@ const fs = require('fs');
 const outDir = path.resolve(__dirname, '../public/icons');
 fs.mkdirSync(outDir, { recursive: true });
 
+// Primary blue from the reference image
+const BLUE = '#4287f5';
+const BLUE_LIGHT = '#7ab3f8';
+
 function buildSvg(size) {
-  // All artwork is defined in a 128x128 viewBox; sharp scales it to `size`.
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 128 128">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1e3a8a"/>
-      <stop offset="100%" stop-color="#3b82f6"/>
-    </linearGradient>
-  </defs>
 
-  <!-- Background rounded square -->
-  <rect width="128" height="128" rx="26" fill="url(#bg)"/>
+  <!-- Solid blue background -->
+  <rect width="128" height="128" rx="24" fill="${BLUE}"/>
 
-  <!-- Minimalist bell, centred at (60, 68) -->
-  <g transform="translate(60,68)" fill="white">
-    <!-- Stem -->
-    <rect x="-4" y="-46" width="8" height="10" rx="4"/>
-    <!-- Bell body: smooth dome narrowing at top, flat rim at bottom -->
-    <path d="M 0,-36 C -22,-36 -32,-18 -32,8 L -32,20 L 32,20 L 32,8 C 32,-18 22,-36 0,-36 Z"/>
-    <!-- Flat rim bar -->
-    <rect x="-36" y="20" width="72" height="8" rx="4"/>
-    <!-- Clapper dot -->
-    <circle cx="0" cy="36" r="6"/>
-  </g>
+  <!-- Subtle inner border ring -->
+  <rect x="4" y="4" width="120" height="120" rx="21"
+        fill="none" stroke="${BLUE_LIGHT}" stroke-width="2.5" opacity="0.6"/>
 
-  <!-- W badge, top-right -->
-  <circle cx="91" cy="37" r="20" fill="#ef4444"/>
+  <!-- Bell: top knob (circle) -->
+  <circle cx="64" cy="20" r="9" fill="white"/>
+
+  <!-- Bell body -->
+  <path d="
+    M 64,29
+    C 40,29 18,46 18,70
+    L 18,91
+    Q 18,102 64,102
+    Q 110,102 110,91
+    L 110,70
+    C 110,46 88,29 64,29
+    Z
+  " fill="white"/>
+
+  <!-- Bell mount (clapper holder at bottom) -->
+  <path d="M 44,102 Q 44,116 64,116 Q 84,116 84,102 Z" fill="white"/>
+
+  <!-- W letter — blue on white, large and bold -->
   <text
-    x="91" y="44"
+    x="60" y="84"
     text-anchor="middle"
     font-family="'Arial Black', 'Arial Bold', Arial, sans-serif"
     font-weight="900"
-    font-size="22"
-    fill="white"
+    font-size="44"
+    fill="${BLUE}"
   >W</text>
+
+  <!-- Clapper dot — dark circle, right of W -->
+  <circle cx="86" cy="80" r="10" fill="#111827"/>
 </svg>`;
 }
 
