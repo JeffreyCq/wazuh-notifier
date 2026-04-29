@@ -50,7 +50,7 @@ module.exports = (env = {}) => ({
           from: env.firefox ? 'manifest.firefox.json' : 'manifest.json',
           to: 'manifest.json',
         },
-        { from: 'public', to: '.' },
+        { from: 'public', to: '.', globOptions: { ignore: ['**/logo.png'] } },
       ],
     }),
   ],
