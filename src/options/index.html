@@ -30,7 +30,7 @@
 
         <!-- Notifications -->
         <section class="card">
-          <h2>Notifications</h2>
+          <h2 style="margin-bottom:14px">Notifications</h2>
           <div class="toggle-row">
             <div>
               <p class="toggle-label">Sound alerts</p>
@@ -45,10 +45,10 @@
 
         <!-- Data -->
         <section class="card">
-          <h2>Data</h2>
+          <h2 style="margin-bottom:14px">Data</h2>
           <div class="data-actions">
             <button id="btn-export-json" class="btn btn-secondary btn-sm">Export JSON</button>
-            <button id="btn-export-csv" class="btn btn-secondary btn-sm">Export CSV</button>
+            <button id="btn-export-csv"  class="btn btn-secondary btn-sm">Export CSV</button>
             <button id="btn-clear-history" class="btn btn-danger btn-sm">Clear History</button>
           </div>
         </section>
@@ -60,97 +60,108 @@
       </main>
     </div>
 
-    <!-- Cluster edit modal -->
+    <!-- Cluster modal -->
     <div id="modal-overlay" class="modal-overlay hidden">
       <div class="modal">
         <div class="modal-header">
           <h3 id="modal-title">Add Cluster</h3>
           <button id="modal-close" class="modal-close">✕</button>
         </div>
+
         <div class="modal-body">
+
+          <!-- Name -->
           <div class="field">
             <label for="c-name">Cluster Name</label>
-            <div class="field-input-row">
-              <input type="text" id="c-name" placeholder="Production Wazuh" />
-            </div>
+            <input type="text" id="c-name" class="field-input"
+                   placeholder="Production Wazuh" autocomplete="off" />
           </div>
 
-          <div class="field" style="margin-top:14px">
+          <!-- Connection mode -->
+          <div class="field">
             <label>Connection Mode</label>
             <div class="mode-tabs">
               <button class="mode-tab active" data-mode="selfhosted">🖥 Self-hosted</button>
-              <button class="mode-tab" data-mode="cloud">☁ Wazuh Cloud</button>
+              <button class="mode-tab"        data-mode="cloud">☁ Wazuh Cloud</button>
             </div>
           </div>
 
+          <!-- Self-hosted fields -->
           <div id="m-selfhosted">
             <div class="field">
               <label for="c-opensearch-url">OpenSearch URL</label>
-              <div class="field-input-row">
-                <input type="url" id="c-opensearch-url" placeholder="https://192.168.1.100:9200" />
-              </div>
+              <input type="url" id="c-opensearch-url" class="field-input"
+                     placeholder="https://192.168.1.100:9200" />
             </div>
-            <div class="field-row">
+            <div class="field-row" style="margin-top:14px">
               <div class="field">
                 <label for="c-username">Username</label>
-                <div class="field-input-row">
-                  <input type="text" id="c-username" placeholder="admin" autocomplete="off" />
-                </div>
+                <input type="text" id="c-username" class="field-input"
+                       placeholder="admin" autocomplete="off" />
               </div>
               <div class="field">
                 <label for="c-password">Password</label>
-                <div class="field-input-row">
-                  <input type="password" id="c-password" placeholder="••••••••" autocomplete="new-password" />
-                  <button type="button" id="c-toggle-password" class="btn-inline">Show</button>
+                <div class="input-group">
+                  <input type="password" id="c-password"
+                         placeholder="••••••••" autocomplete="new-password" />
+                  <button type="button" id="c-toggle-password" class="group-btn">Show</button>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Cloud fields -->
           <div id="m-cloud" class="hidden">
             <div class="field">
               <label for="c-dashboard-url">Dashboard URL</label>
-              <div class="field-input-row">
-                <input type="url" id="c-dashboard-url" placeholder="https://xxxxxxxx.cloud.wazuh.com" />
-              </div>
+              <input type="url" id="c-dashboard-url" class="field-input"
+                     placeholder="https://xxxxxxxx.cloud.wazuh.com" />
             </div>
             <div class="cloud-hint">
-              <span>ℹ</span> Uses your active browser session — log into the dashboard first.
+              <span>ℹ</span>
+              Uses your active browser session — log into the dashboard first.
             </div>
           </div>
 
-          <div class="field-row" style="margin-top:14px">
+          <!-- Poll interval + alert level -->
+          <div class="field-row">
             <div class="field">
               <label for="c-poll-interval">Poll Interval</label>
-              <div class="field-input-row narrow">
+              <div class="input-group narrow">
                 <input type="number" id="c-poll-interval" min="1" max="60" value="2" />
-                <span class="input-suffix">min</span>
+                <span class="group-suffix">min</span>
               </div>
             </div>
-            <div class="field">
+            <div class="field" style="flex:2">
               <label for="c-min-level">Min Alert Level</label>
-              <div class="field-input-row">
-                <input type="range" id="c-min-level" min="1" max="15" value="12" />
+              <div style="display:flex;align-items:center;gap:6px">
+                <input type="range" id="c-min-level" class="field-input"
+                       min="1" max="15" value="12" style="flex:1;height:36px;padding:0" />
                 <span id="c-level-value" class="level-badge">12</span>
               </div>
             </div>
           </div>
 
-          <div class="field" style="margin-top:14px">
-            <label for="c-agent-filter">Agent Filter <span class="optional">(optional)</span></label>
-            <div class="field-input-row">
-              <input type="text" id="c-agent-filter" placeholder="e.g. web-server (partial match)" />
-            </div>
+          <!-- Agent filter -->
+          <div class="field">
+            <label for="c-agent-filter">
+              Agent Filter <span class="optional">(optional)</span>
+            </label>
+            <input type="text" id="c-agent-filter" class="field-input"
+                   placeholder="e.g. web-server (partial match)" autocomplete="off" />
           </div>
 
+          <!-- Test -->
           <div class="test-row">
             <button id="c-btn-test" class="btn btn-secondary btn-sm">Test Connection</button>
             <span id="c-test-result" class="test-result"></span>
           </div>
-        </div>
+
+        </div><!-- /modal-body -->
+
         <div class="modal-footer">
           <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
-          <button id="modal-save" class="btn btn-primary">Save Cluster</button>
+          <button id="modal-save"   class="btn btn-primary">Save Cluster</button>
         </div>
       </div>
     </div>
